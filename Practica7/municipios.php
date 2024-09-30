@@ -1,16 +1,24 @@
 <?php
 $conn = new mysqli("localhost", "root", "witty", "alumnos");
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $municipios[] = $row;
+    }
+    var_dump($municipios); // Añadir para depuración
+    echo json_encode($municipios);
 }
 
-$query = "SELECT * FROM municipios WHERE id_departamento = " . $_GET['id'];
+
+$id_departamento = $_GET['id'];
+$query = "SELECT * FROM municipios WHERE id_departamento = " . intval($id_departamento);
 $result = $conn->query($query);
 
-while ($row = $result->fetch_assoc()) {
-    $municipios[] = $row;
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $municipios[] = $row;
+    }
+    echo json_encode($municipios);
+} else {
+    echo json_encode([]);  // Devolver un array vacío si no hay resultados
 }
-echo json_encode($municipios);
-
-$conn->close();

@@ -5,13 +5,15 @@ const form = document.getElementById('form');
 
 // Eventos
 departamento.addEventListener('change', () => {
-  if (departamento.value == null) {
+  if (departamento.value !== '') {
+    // Si se seleccionó un valor, llama a getMunicipios
     getMunicipios(departamento.value);
   }
 });
 
 const getMunicipios = (id) => {
-  const url = 'http://localhost/SoftLibre/Practicas_DWSL_Cll24/Practica7/municipios.php?id=' + id;
+  console.log('ID del departamento seleccionado:', id); // Añadir para depuración
+  const url = 'http://localhost/SoftLibre/Practicas_DWSL_CII24/Practica7/municipios.php?id=' + id;
   fetch(url, {
     method: 'GET',
     headers: {
@@ -19,6 +21,7 @@ const getMunicipios = (id) => {
     },
   })
     .then((response) => {
+      console.log('Respuesta:', response); // Depurar el objeto de respuesta
       if (response.ok) {
         return response.json();
       } else {
@@ -26,17 +29,14 @@ const getMunicipios = (id) => {
       }
     })
     .then((data) => {
-      municipio.innerHTML = '';
+      console.log('Datos:', data); // Depurar los datos recibidos
+      municipio.innerHTML = '<option value="">-- Seleccione --</option>';
       data.forEach((element) => {
-        municipio.innerHTML += `
-                <option value="${element.id}">
-                    ${element.nombre}
-                </option>
-            `;
+        municipio.innerHTML += `<option value="${element.id}">${element.nombre}</option>`;
       });
     })
     .catch((error) => {
-      console.log(error);
+      console.error('Error en el fetch:', error); // Mostrar errores del fetch
     });
 };
 
@@ -44,7 +44,13 @@ form.addEventListener('submit', function (event) {
   event.preventDefault();
   const formData = new FormData(this);
 
-  fetch('resultado.php', {
+  // Validar que el municipio esté seleccionado antes de enviar
+  if (municipio.value === '') {
+    alert('Por favor, selecciona un municipio antes de enviar.');
+    return;
+  }
+
+  fetch('guardar.php', {
     method: 'POST',
     body: formData,
   })

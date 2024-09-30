@@ -52,6 +52,7 @@ $departamentos = $conn->query($query);
                         <label for="">Municipio:</label>
                         <select name="municipio" id="municipio" class="form-control">
                             <option value="">-- Seleccione --</option>
+
                         </select>
                     </div>
                 </div>
